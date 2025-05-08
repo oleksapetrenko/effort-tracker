@@ -1,6 +1,7 @@
 import { JarShape } from './JarShape';
 import { CircleChart } from './CircleChart';
 import './UserJar.css';
+import { Avatar } from './Avatar';
 
 type Props = {
   name: string;
@@ -15,21 +16,32 @@ const categoryColors: Record<string, string> = {
   Support: '#f44336',
   Research: '#9c27b0',
   Exercise: '#ff9800',
-  Training: '#3f51b5',
+  Training: '#3f51b5'
 };
 
 export const UserJar = ({ name, total, maxTotal, logs }: Props) => {
   const waterLevel = total / maxTotal;
 
-  const slices = logs.map(log => ({
+  const slices = logs.map((log) => ({
     label: log.category,
     value: log.duration,
-    color: categoryColors[log.category] || '#999',
+    color: categoryColors[log.category] || '#999'
   }));
 
   return (
     <div className="user-container">
-      <h3>{name}</h3>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          justifyContent: 'center',
+          marginBottom: '0.5rem'
+        }}
+      >
+        <Avatar name={name} />
+        <h3 style={{ margin: 0 }}>{name}</h3>
+      </div>
       <JarShape waterLevel={waterLevel} label={`${total} h`} />
       <div style={{ margin: '1rem auto' }}>
         <CircleChart slices={slices} />
