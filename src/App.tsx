@@ -1,20 +1,51 @@
-import React, { useState } from 'react';
-import { mockedLogs } from './data';
-import { UserJar } from './components/UserJar';
-import './components/UserJar.css';
+import './App.css';
+
+import React, {useState} from 'react';
+import {mockedLogs} from './data';
+import {UserJar} from './components/UserJar';
+
+type Period = 'Today' | 'This Week' | 'This Month';
+
+const isInRange = (date: string, start: Date, end: Date): boolean => {
+  const d = new Date(date);
+  return d >= start && d <= end;
+};
 
 function App() {
-  const [period, setPeriod] = useState<'Day' | 'Week' | 'Month'>('Week');
+  const [period, setPeriod] = useState<Period>('This Week');
+  const [referenceDate, setReferenceDate] = useState<string>(
+    new Date().toISOString().slice(0, 10)
+  );
 
-  const totals = mockedLogs.map((u) =>
+  const now = new Date(referenceDate);
+  let startDate = new Date(now);
+  if (period === 'This Week') startDate.setDate(now.getDate() - 6);
+  if (period === 'This Month') startDate.setDate(now.getDate() - 29);
+  startDate.setHours(0, 0, 0, 0);
+
+  const filteredLogs = mockedLogs.map(user => {
+    const logs = user.logs.filter(log =>
+      isInRange(log.date, startDate, now)
+    );
+    return {name: user.name, logs};
+  });
+
+  const totals = filteredLogs.map(u =>
     u.logs.reduce((sum, log) => sum + log.duration, 0)
   );
-  const maxTotal = Math.max(...totals);
+  const maxTotal = Math.max(...totals, 1);
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <header style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-        {(['Day', 'Week', 'Month'] as const).map((p) => (
+    <div className="page-container">
+      <header style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '1rem',
+        marginBottom: '1rem'
+      }}>
+        {(['Today', 'This Week', 'This Month'] as Period[]).map(p => (
           <button
             key={p}
             style={{
@@ -30,8 +61,18 @@ function App() {
             {p}
           </button>
         ))}
+        <input
+          type="date"
+          value={referenceDate}
+          onChange={(e) => setReferenceDate(e.target.value)}
+          style={{
+            padding: '0.5rem 1rem',
+            fontSize: '1rem',
+            borderRadius: '4px',
+            border: '1px solid #ccc'
+          }}
+        />
         <button style={{
-          marginLeft: 'auto',
           padding: '0.5rem 1rem',
           background: '#007bff',
           color: '#fff',
@@ -41,12 +82,27 @@ function App() {
         }}>+ Add Log</button>
       </header>
 
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>
-        {mockedLogs.map((user, i) => (
+      <div style={{
+        textAlign: 'center',
+        marginBottom: '1.5rem',
+        fontStyle: 'italic',
+        fontSize: '0.95rem',
+        color: '#444'
+      }}>
+        {period} — {startDate.toISOString().slice(0, 10)} → {now.toISOString().slice(0, 10)}
+      </div>
+
+      <div className="jar-grid">
+        {filteredLogs.map((user, i) => (
           <UserJar
             key={user.name}
             name={user.name}
-            logs={user.logs}
+            logs={user.logs.reduce((acc, log) => {
+              const found = acc.find(e => e.category === log.category);
+              if (found) found.duration += log.duration;
+              else acc.push({category: log.category, duration: log.duration});
+              return acc;
+            }, [] as { category: string; duration: number }[])}
             total={totals[i]}
             maxTotal={maxTotal}
           />

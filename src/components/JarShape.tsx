@@ -31,7 +31,7 @@ export const JarShape = ({ waterLevel, label }: Props) => {
   `;
 
   return (
-    <svg
+    <svg className="jar-svg"
       viewBox={`0 0 ${W} ${H}`}
       width="120"
       height="160"
