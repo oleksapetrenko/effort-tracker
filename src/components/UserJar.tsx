@@ -2,6 +2,7 @@ import { JarShape } from './JarShape';
 import { CircleChart } from './CircleChart';
 import './UserJar.css';
 import { Avatar } from './Avatar';
+import { Link } from 'react-router-dom';
 
 type Props = {
   name: string;
@@ -42,7 +43,9 @@ export const UserJar = ({ name, total, maxTotal, logs }: Props) => {
         <Avatar name={name} />
         <h3 style={{ margin: 0 }}>{name}</h3>
       </div>
-      <JarShape waterLevel={waterLevel} label={`${total} h`} />
+      <Link to={`/calendar?user=${name}`}>
+        <JarShape waterLevel={waterLevel} label={`${total} h`} />
+      </Link>
       <div style={{ margin: '1rem auto' }}>
         <CircleChart slices={slices} />
       </div>

@@ -4,6 +4,7 @@ export type Log = {
   category: string;
   duration: number; // in hours
   date: string; // ISO format
+  notes?: string;
 };
 
 export type UserLogs = {
@@ -53,3 +54,7 @@ export const mockedLogs: UserLogs[] = [
     ]
   }
 ];
+
+export const logsByUser = (name: string) => {
+  return mockedLogs.find((u) => u.name === name)?.logs || [];
+};

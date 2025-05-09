@@ -2,7 +2,7 @@
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem 1rem; /* фіксований горизонтальний відступ */
+  padding: 2rem 1rem;
   font-family: sans-serif;
   box-sizing: border-box;
 }
@@ -10,12 +10,135 @@
 .jar-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem; /* зменшено трохи */
+  gap: 1.5rem;
   justify-items: center;
   margin-top: 1rem;
 }
 
-/* адаптація для мобільних */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.calendar-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.today-button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  height: 40px; /* або встанови 100% від висоти аватарки */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.full-width-calendar {
+  width: 100%;
+  max-width: 100%;
+  border: none;
+}
+
+.react-calendar {
+  width: 100% !important;
+  max-width: 100%;
+  font-family: inherit;
+  border: none;
+}
+
+.react-calendar__tile {
+  aspect-ratio: 1 / 1;
+  min-height: 4rem;
+}
+
+input, select, textarea {
+  padding: 1rem;
+  font-size: 1.1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+button:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  height: 40px; /* або така сама як .avatar */
+  width: 40px;
+  border-radius: 50%;
+  color: #007bff;
+  font-size: 1.25rem;
+}
+
+.logout-button:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
 @media (max-width: 600px) {
   .jar-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -23,7 +146,7 @@
 
   .user-container {
     width: 100%;
-    max-width: 140px; /* зменшено */
+    max-width: 140px;
   }
 
   .jar-svg {

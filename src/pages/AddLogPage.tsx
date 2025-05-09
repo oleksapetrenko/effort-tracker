@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { AppHeader } from '../components/AppHeader';
 
@@ -7,12 +7,19 @@ const categories = ['Development', 'Testing', 'Support', 'Research', 'Exercise',
 
 export const AddLogPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { name: userName } = useUser();
 
+  const queryParams = new URLSearchParams(location.search);
+  const isEdit = queryParams.get('edit') === '1';
+  const editCategory = queryParams.get('category') || categories[0];
+  const editDate = queryParams.get('date') || new Date().toISOString().slice(0, 10);
+  const cancelTo = isEdit ? `/calendar?user=${userName}` : '/';
+
   const [form, setForm] = useState({
-    category: categories[0],
+    category: editCategory,
     duration: '',
-    date: new Date().toISOString().slice(0, 10),
+    date: editDate,
     notes: ''
   });
 
@@ -38,30 +45,7 @@ export const AddLogPage: React.FC = () => {
   return (
     <div className="page-container" style={{ maxWidth: 500, margin: '0 auto' }}>
       <AppHeader />
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginTop: '1rem',
-          marginBottom: '1rem'
-        }}
-      >
-        <h2>Add Log</h2>
-        <button
-          onClick={() => navigate('/')}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: '#007bff',
-            fontSize: '1rem',
-            cursor: 'pointer'
-          }}
-        >
-          Cancel
-        </button>
-      </div>
-
+      <h2>{isEdit ? 'Edit Log' : 'Add Log'}</h2>
       <form
         onSubmit={handleSubmit}
         style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
@@ -88,20 +72,18 @@ export const AddLogPage: React.FC = () => {
           onChange={handleChange}
           rows={3}
         />
-        <button
-          type="submit"
-          style={{
-            padding: '0.75rem',
-            backgroundColor: '#007bff',
-            color: 'white',
-            fontSize: '1rem',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer'
-          }}
-        >
-          Save
-        </button>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '2rem' }}>
+          <button
+            type="button"
+            onClick={() => navigate(cancelTo)}
+            className="btn btn-secondary btn-full"
+          >
+            Cancel
+          </button>
+          <button type="submit" className="btn btn-primary btn-full">
+            Save
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -8,6 +8,7 @@ import { FAB } from './components/FAB';
 import { LoginPage } from './pages/LoginPage';
 import { UserProvider, useUser } from './context/UserContext';
 import { AppHeader } from './components/AppHeader';
+import { CalendarPage } from './pages/CalendarPage';
 
 type Period = 'Today' | 'This Week' | 'This Month';
 
@@ -148,6 +149,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/add" element={<AddLogPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
         </Routes>
       </Router>
     </UserProvider>
