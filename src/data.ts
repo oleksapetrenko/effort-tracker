@@ -1,5 +1,3 @@
-// src/data.ts
-
 export type Log = {
   category: string;
   duration: number; // in hours
@@ -10,6 +8,15 @@ export type Log = {
 export type UserLogs = {
   name: string;
   logs: Log[];
+};
+
+export const categoryColors: Record<string, string> = {
+  Development: '#4caf50',
+  Testing: '#2196f3',
+  Support: '#f44336',
+  Research: '#9c27b0',
+  Exercise: '#ff9800',
+  Training: '#3f51b5'
 };
 
 export const mockedLogs: UserLogs[] = [

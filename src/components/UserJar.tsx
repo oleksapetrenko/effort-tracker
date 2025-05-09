@@ -3,24 +3,18 @@ import { CircleChart } from './CircleChart';
 import './UserJar.css';
 import { Avatar } from './Avatar';
 import { Link } from 'react-router-dom';
+import { FaTrophy } from 'react-icons/fa';
+import { categoryColors } from '../data';
 
 type Props = {
   name: string;
   total: number;
   maxTotal: number;
   logs: { category: string; duration: number }[];
+  isLeader?: boolean;
 };
 
-const categoryColors: Record<string, string> = {
-  Development: '#4caf50',
-  Testing: '#2196f3',
-  Support: '#f44336',
-  Research: '#9c27b0',
-  Exercise: '#ff9800',
-  Training: '#3f51b5'
-};
-
-export const UserJar = ({ name, total, maxTotal, logs }: Props) => {
+export const UserJar = ({ name, total, maxTotal, logs, isLeader = false }: Props) => {
   const waterLevel = total / maxTotal;
 
   const slices = logs.map((log) => ({
@@ -30,7 +24,20 @@ export const UserJar = ({ name, total, maxTotal, logs }: Props) => {
   }));
 
   return (
-    <div className="user-container">
+    <div className="user-container" style={{ position: 'relative' }}>
+      {isLeader && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '-10px',
+            right: '-10px',
+            color: '#FFD700',
+            fontSize: '1.5rem'
+          }}
+        >
+          <FaTrophy />
+        </div>
+      )}
       <div
         style={{
           display: 'flex',

@@ -9,13 +9,9 @@ import { LoginPage } from './pages/LoginPage';
 import { UserProvider, useUser } from './context/UserContext';
 import { AppHeader } from './components/AppHeader';
 import { CalendarPage } from './pages/CalendarPage';
+import { calculateUserSummaries, findLeaderName, sortUsers } from './utils/leaderUtils';
 
 type Period = 'Today' | 'This Week' | 'This Month';
-
-const isInRange = (date: string, start: Date, end: Date): boolean => {
-  const d = new Date(date);
-  return d >= start && d <= end;
-};
 
 const HomePage = () => {
   const [period, setPeriod] = useState<Period>('This Week');
@@ -28,13 +24,10 @@ const HomePage = () => {
   if (period === 'This Month') startDate.setDate(now.getDate() - 29);
   startDate.setHours(0, 0, 0, 0);
 
-  const filteredLogs = mockedLogs.map((user) => {
-    const logs = user.logs.filter((log) => isInRange(log.date, startDate, now));
-    return { name: user.name, logs };
-  });
-
-  const totals = filteredLogs.map((u) => u.logs.reduce((sum, log) => sum + log.duration, 0));
-  const maxTotal = Math.max(...totals, 1);
+  const filteredSummaries = calculateUserSummaries(mockedLogs, startDate, now);
+  const sortedSummaries = sortUsers(filteredSummaries, userName ?? undefined);
+  const maxTotal = Math.max(...filteredSummaries.map((u) => u.total), 1);
+  const leaderName = findLeaderName(filteredSummaries);
 
   return (
     <div className="page-container">
@@ -89,18 +82,7 @@ const HomePage = () => {
         />
         {userName && (
           <Link to="/add">
-            <button
-              style={{
-                padding: '0.5rem 1rem',
-                background: '#007bff',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              + Add Log
-            </button>
+            <button className="btn btn-primary">+ Add Log</button>
           </Link>
         )}
       </div>
@@ -118,21 +100,14 @@ const HomePage = () => {
       </div>
 
       <div className="jar-grid">
-        {filteredLogs.map((user, i) => (
+        {sortedSummaries.map((user) => (
           <UserJar
             key={user.name}
             name={user.name}
-            logs={user.logs.reduce(
-              (acc, log) => {
-                const found = acc.find((e) => e.category === log.category);
-                if (found) found.duration += log.duration;
-                else acc.push({ category: log.category, duration: log.duration });
-                return acc;
-              },
-              [] as { category: string; duration: number }[]
-            )}
-            total={totals[i]}
+            logs={user.logs}
+            total={user.total}
             maxTotal={maxTotal}
+            isLeader={user.name === leaderName}
           />
         ))}
       </div>
